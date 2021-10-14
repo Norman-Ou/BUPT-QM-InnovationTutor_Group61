@@ -22,6 +22,54 @@ Project: Smart home model
 
 ![image-20211014190820383](https://typorastroage.oss-cn-beijing.aliyuncs.com/img/image-20211014190820383.png)
 
+# Instructions
+
+## Arduino
+
+1. Downloading file
+
+2. Opening `A_Final_Arduino.ino` file by Arduino IDE
+
+   Address:
+
+   `..\Telecommunications Engineering with Management\A_Final_Arduino\A_Final_Arduino.ino`
+
+3. Setting Board to **Arduino Uno**
+
+   ![image-20211014195550952](https://typorastroage.oss-cn-beijing.aliyuncs.com/img/image-20211014195550952.png)
+
+4. USB Connects the Arduino board and sets the port. *In my computer that is COM5*
+
+   ![image-20211014195747825](https://typorastroage.oss-cn-beijing.aliyuncs.com/img/image-20211014195747825.png)
+
+5. Uploading Code
+
+## ESP8266
+
+1. Downloading file
+
+2. Opening `A_Final_ESP8266.ino` file by Arduino IDE
+
+   Address:
+
+   `..\Telecommunications Engineering with Management\A_Final_ESP8266\A_Final_ESP8266.ino`
+
+3. Set Wifi information, including **Wifi name, Wifi password, mqtt broker, subsribe topic**
+
+   ![image-20211014200249302](https://typorastroage.oss-cn-beijing.aliyuncs.com/img/image-20211014200249302.png)
+
+4. Setting Board to **NodeMCU 1.0**
+
+   ![image-20211014195957141](https://typorastroage.oss-cn-beijing.aliyuncs.com/img/image-20211014195957141.png)
+
+   **Attention**: ESP8266 Board driver are needed to downloading in **Borad Manager**
+
+   ![image-20211014200119613](https://typorastroage.oss-cn-beijing.aliyuncs.com/img/image-20211014200119613.png)
+
+5. USB Connects the Arduino board and sets the port.
+
+6. Uploading
+
 # Telecommunications Engineering with Management
 
 ## Circuit board naming
@@ -125,6 +173,6 @@ String information = "" +
                      String((int)DHT11.temperature) + ";" 
                      String((int)DHT11.humidity) + ";" +
                      String(volume) + ";" +
-    				 warning;
+    				         warning;
 ```
 
