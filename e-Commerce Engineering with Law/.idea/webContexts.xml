@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebContextManager">
+    <option name="state">
+      <map>
+        <entry key="file://$PROJECT_DIR$/WebRoot/change.jsp" value="file://$PROJECT_DIR$/WebRoot" />
+        <entry key="file://$PROJECT_DIR$/WebRoot/check2.jsp" value="file://$PROJECT_DIR$/WebRoot" />
+        <entry key="file://$PROJECT_DIR$/WebRoot/inf.jsp" value="file://$PROJECT_DIR$/WebRoot" />
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://Java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <welcome-file-list>
+    <welcome-file>/login.jsp</welcome-file>
+    <welcome-file>/door.jsp</welcome-file>
+    <welcome-file>/window.jsp</welcome-file>
+    <welcome-file>/humidifier.jsp</welcome-file>
+    <welcome-file>/light.jsp</welcome-file>
+  </welcome-file-list>
+    <servlet>
+        <servlet-name>loginServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.LoginServlet</servlet-class>
+    </servlet>
+     <servlet>
+        <servlet-name>doorServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.DoorServlet</servlet-class>
+    </servlet>
+        <servlet>
+        <servlet-name>lightServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.LightServlet</servlet-class>
+    </servlet>
+        <servlet>
+        <servlet-name>humidifierServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.HumidifierServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>windowServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.WindowServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>addlightServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.LightAddServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deviceServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.DeviceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>infServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.InfServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>alarmServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.AlarmServlet</servlet-class>
+    </servlet>
+
+  <servlet-mapping>
+    <servlet-name>loginServlet</servlet-name>
+    <url-pattern>/login</url-pattern>
+  </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>doorServlet</servlet-name>
+        <url-pattern>/door</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>lightServlet</servlet-name>
+        <url-pattern>/light</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>registerServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.RegisterServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>humidifierServlet</servlet-name>
+        <url-pattern>/humidifier</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>windowServlet</servlet-name>
+        <url-pattern>/window</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>addlightServlet</servlet-name>
+        <url-pattern>/addlight</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>deviceServlet</servlet-name>
+        <url-pattern>/device</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>infServlet</servlet-name>
+        <url-pattern>/inf</url-pattern>
+    </servlet-mapping>
+    
+      <servlet>
+    <servlet-name>showServlet</servlet-name>
+    <servlet-class>jspservlet.servlet.ShowServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>showServlet</servlet-name>
+    <url-pattern>/show</url-pattern>
+  </servlet-mapping>
+  
+    <servlet>
+    <servlet-name>changeServlet</servlet-name>
+    <servlet-class>jspservlet.servlet.ChangeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>changeServlet</servlet-name>
+    <url-pattern>/change</url-pattern>
+  </servlet-mapping>
+    <servlet>
+        <servlet-name>homechangeServlet</servlet-name>
+        <servlet-class>jspservlet.servlet.HomechangeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>alarmServlet</servlet-name>
+        <url-pattern>/alarm</url-pattern>
+    </servlet-mapping>
+</web-app>
