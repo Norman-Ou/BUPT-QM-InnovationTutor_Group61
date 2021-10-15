@@ -4,7 +4,8 @@
 #include <LiquidCrystal_I2C.h>
 #include <IRremote.h>
 
-SoftwareSerial mySerial(6, 5); // RX, TX 配置 6、5 为软串口
+//Defining Hardware which needed import library
+SoftwareSerial mySerial(6, 5);//RX and TX serial ports 6 and 5 are configured as Softserial ports
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 dht11 DHT11;
 
@@ -21,19 +22,27 @@ int detect = 0;
 //LCD Screen display information
 void LCDShowInfo()
 {
-    lcd.setCursor(0, 0); //light
-    lcd.print("Light:");
-    lcd.print(brightness, 10);
-    if (distance > 7)
+    lcd.setCursor(0, 0); 
+    if (hit == 1)
     {
-        lcd.print("  Door:O");
+        lcd.print("Window:O");
     }
     else
     {
-        lcd.print("  Door:X");
+        lcd.print("Window:X");
+    }
+    if (distance < 8.8)
+    {
+        lcd.print(" Door:C");
+    }
+    else
+    {
+        lcd.print(" Door:O");
     }
     lcd.setCursor(0, 1);
-    lcd.print("H:");
+    lcd.print("B:");
+    lcd.print(brightness);
+    lcd.print(" H:");
     lcd.print((int)DHT11.humidity);
     lcd.print("%");
     lcd.print(" T:");
@@ -43,15 +52,17 @@ void LCDShowInfo()
 
 void setup()
 {
-    //1602初始化
+    //Arduino initialization
     Serial.begin(115200);
+    //LCD initialization
     lcd.init();
     lcd.backlight();
-
+    //Waiting Arduino ready
     while (!Serial)
     {
         ;
     }
+    //Connectiong ESP8266 serial initialization
     mySerial.begin(115200);
 
     //ULTRASONIC
@@ -64,20 +75,23 @@ void setup()
     //LIGHT SENSOR
     pinMode(A1, INPUT);
 
-    //BODY SENSOR
+    //PIR SENSOR
     pinMode(4, INPUT);
 }
 
 void loop()
 {
+    //Sensor information is read every five seconds
     delay(5000);
+    
+    //Reading DHT11 information
+    int chk = DHT11.read(2); 
+    
+    //Ambient brightness measurement
+    EPBrightness = map(analogRead(A1), 200, 1023, 255, 0);
+    brightness = map(EPBrightness, 0, 255, 9, 0);
 
-    int chk = DHT11.read(2); //读取DHT11
-
-    EPBrightness = map(analogRead(A1), 0, 1023, 255, 0);
-    brightness = map(EPBrightness, 0, 255, 0, 9);
-
-    //超声波测距
+    //Ultrasonic ranging
     digitalWrite(8, LOW);
     delayMicroseconds(2);
     digitalWrite(8, HIGH);
@@ -98,7 +112,7 @@ void loop()
         hit = 0;
     }
 
-    //人体传感
+    //PIR Sensor
     if (digitalRead(4) == HIGH)
     {
         detect = 1;
@@ -108,6 +122,7 @@ void loop()
         detect = 0;
     }
 
+    //Assemble sensor information
     String information = "" +
                          String(hit) + ";" +
                          String(detect) + ";" +
@@ -117,14 +132,16 @@ void loop()
                          String((int)DHT11.temperature) + ";" +
                          String((int)DHT11.humidity) + ";" +
                          String(volume);
-    information = "0;1;5;9;10.00;0;0;41";
-
+                         
+    //Checking assembled information
     Serial.print("Sending to Wifi Module: ");
     Serial.println(information);
-
+    
+    //Sending information to ESP8266
     Serial.println("Sending...");
     mySerial.print(information);
     Serial.println("Sending Complete!");
-
+    
+    //LCD screen display the sensor information
     LCDShowInfo();
 }

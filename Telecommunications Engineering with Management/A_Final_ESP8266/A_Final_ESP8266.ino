@@ -5,8 +5,8 @@
 #include <Wire.h>
 
 // WiFi
-const char *ssid = "jyc";           // Enter your WiFi name
-const char *password = "123456789"; // Enter WiFi password
+const char *ssid = "HONOR 20 PRO"; // Enter your WiFi name
+const char *password = "12345678"; // Enter WiFi password
 
 // MQTT Broker
 const char *mqtt_broker = "broker.emqx.io";
@@ -20,7 +20,7 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 SoftwareSerial ArduinoSerial(D6, D5); // RX, TX 配置 3、2 为软串口
 decode_results results;
-IRrecv irrecv(12);
+IRrecv irrecv(D7);
 
 //global variables
 String recData = "";
@@ -29,11 +29,13 @@ int R_Brightness = 0;
 int G_Brightness = 0;
 int B_Brightness = 0;
 int lightType = 1; //1 -> R; 2 -> G; 0 -> B; 3 ->RGB
-int warning = 0;//0->no warning; 1->warning; -1->shutdown warning system
+int warning = 0;   //0->no warning; 1->warning; -1->shutdown warning system
+int Brightness;
 int IR_brightness;
 int hit;
 int detect;
 int volume;
+boolean AutoLight = false;
 double distance;
 
 //IR light control
@@ -147,60 +149,70 @@ void WIFI_Control()
   {
     analogWrite(D1, 0);
     R_Brightness = 0;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "1;1")
   {
     analogWrite(D1, 25);
     R_Brightness = 1;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "1;2")
   {
     analogWrite(D1, 50);
     R_Brightness = 2;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "1;3")
   {
     analogWrite(D1, 75);
     R_Brightness = 3;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "1;4")
   {
     analogWrite(D1, 10);
     R_Brightness = 4;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "1;5")
   {
     analogWrite(D1, 125);
     R_Brightness = 5;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "1;6")
   {
     analogWrite(D1, 150);
     R_Brightness = 6;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "1;7")
   {
     analogWrite(D1, 175);
     R_Brightness = 7;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "1;8")
   {
     analogWrite(D1, 200);
     R_Brightness = 8;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "1;9")
   {
     analogWrite(D1, 255);
     R_Brightness = 9;
+    lightType = 1;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
 
@@ -208,18 +220,21 @@ void WIFI_Control()
   {
     analogWrite(2, 0);
     G_Brightness = 0;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "2;1")
   {
     analogWrite(D2, 25);
     G_Brightness = 1;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "2;2")
   {
     analogWrite(D2, 50);
     G_Brightness = 2;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "2;3")
@@ -232,36 +247,42 @@ void WIFI_Control()
   {
     analogWrite(D2, 10);
     G_Brightness = 4;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "2;5")
   {
     analogWrite(D2, 125);
     G_Brightness = 5;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "2;6")
   {
     analogWrite(D2, 150);
     G_Brightness = 6;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "2;7")
   {
     analogWrite(D2, 175);
     G_Brightness = 7;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "2;8")
   {
     analogWrite(D2, 200);
     G_Brightness = 8;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "2;9")
   {
     analogWrite(D2, 255);
     G_Brightness = 9;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
 
@@ -269,60 +290,70 @@ void WIFI_Control()
   {
     analogWrite(D3, 0);
     B_Brightness = 0;
+    lightType = 2;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "3;1")
   {
     analogWrite(D3, 25);
     B_Brightness = 1;
+    lightType = 0;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "3;2")
   {
     analogWrite(D3, 50);
     B_Brightness = 2;
+    lightType = 0;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "3;3")
   {
     analogWrite(D3, 75);
     B_Brightness = 3;
+    lightType = 0;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "3;4")
   {
     analogWrite(D3, 10);
     B_Brightness = 4;
+    lightType = 0;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "3;5")
   {
     analogWrite(D3, 125);
     B_Brightness = 5;
+    lightType = 0;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "3;6")
   {
     analogWrite(D3, 150);
     B_Brightness = 6;
+    lightType = 0;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "3;7")
   {
     analogWrite(D3, 175);
     B_Brightness = 7;
+    lightType = 0;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "3;8")
   {
     analogWrite(D3, 200);
     B_Brightness = 8;
+    lightType = 0;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "3;9")
   {
     analogWrite(D3, 255);
     B_Brightness = 9;
+    lightType = 0;
     IR_brightness = GetMax(R_Brightness, G_Brightness, B_Brightness);
   }
   else if (serData == "shutdown")
@@ -339,79 +370,9 @@ void WIFI_Control()
   }
 }
 
-//Extract the message and judge whether it meets the alarm conditions, and then integrate and send
-void ArduinoMesProcessing(String recData)
-{
-  Serial.print("Rereceiving Arduino Data:");
-  Serial.println(recData);
-
-  //Extracting information
-  hit = recData.substring(0, 1).toInt();
-  detect = recData.substring(2, 3).toInt();
-  int last_index = recData.indexOf(';');
-  int index, disStartIndex, disEndIndex, volStartIndex;
-  for (int i = 2; i <= 7; i++)
-  {
-    index = recData.indexOf(';', last_index + 1);
-    last_index = index;
-    if (i == 4)
-    {
-      disStartIndex = index + 1;
-    }
-    if (i == 6)
-    {
-      disEndIndex = index - 2;
-    }
-    if (i == 7)
-    {
-      volStartIndex = index + 1;
-    }
-  }
-  distance = recData.substring(disStartIndex, disEndIndex).toDouble();
-  volume = recData.substring(volStartIndex, recData.length()).toInt();
-  String getInfo = "hit: " + String(hit) + ";" +
-                   "detect: " + String(detect) + ";" +
-                   "lightType: " + String(lightType) + ";" +
-                   "distance: " + String(distance) + ";" +
-                   "volume: " + String(volume) + ";";
-  Serial.println(getInfo);
-
-//Warning System
-  if (warning != -1)
-  {
-    if (hit == 1 || distance > 7 || detect == 1 || volume > 60)
-    {
-      digitalWrite(D4, HIGH);
-      warning = 1;
-    }else{
-      digitalWrite(D4, LOW);
-      warning = 0;
-    }
-  }
-  else
-  {
-    digitalWrite(D4, LOW);
-  }
-  //remove hit and detct data
-  removalStr = recData.substring(0, 4).toInt();
-  recData.replace(removalStr,"");
-  //Splicing alarm information
-  recData = recData + ";" + String(warning);
-  //replace lightType information
-  recData.setCharAt(6, char(lightType));
-  //Checking
-  Serial.print("Normal Uploading Data:");
-  Serial.println(recData);
-  //Uploading data to server
-  UploadData(recData);
-  Serial.println("Upload Complete!");
-  //reset String, which used to receive data from Arduino, for the next loop
-  recData = "";
-}
-
 void setup()
 {
-  // Set software serial baud to 25200;
+  // Set software serial baud to 115200;
   Serial.begin(115200);
   //Waiting software serial ready
   while (!Serial)
@@ -443,7 +404,7 @@ void setup()
     else
     {
       Serial.print("failed with state ");
-      Serial.print(client.state());
+      Serial.println(client.state());
       delay(2000);
     }
   }
@@ -453,7 +414,7 @@ void setup()
 
   //Serial Model Setting
   pinMode(D4, OUTPUT); //Alarm
-  digitalWrite(13, LOW);
+  digitalWrite(D4, LOW);
 
   pinMode(D1, OUTPUT); //Red Light
   pinMode(D2, OUTPUT); //Green Light
@@ -461,6 +422,11 @@ void setup()
 
   //enable IR receiver
   irrecv.enableIRIn();
+
+  while (ArduinoSerial.available())
+  {
+    ArduinoSerial.read();
+  }
 }
 
 void loop()
@@ -475,9 +441,86 @@ void loop()
     recData = recData + char(ArduinoSerial.read());
     delay(5);
   }
-  if (recData.length() > 0) 
+  if (recData.length() > 0)
   {
-    ArduinoMesProcessing(recData);
+    Serial.print("Rereceiving Arduino Data:");
+    Serial.println(recData);
+
+    //Extracting information
+    hit = recData.substring(0, 1).toInt();
+    detect = recData.substring(2, 3).toInt();
+    Brightness = recData.substring(3, 4).toInt();
+    int last_index = recData.indexOf(';');
+    int index, disStartIndex, disEndIndex, volStartIndex;
+    for (int i = 2; i <= 7; i++)
+    {
+      index = recData.indexOf(';', last_index + 1);
+      last_index = index;
+      if (i == 4)
+      {
+        disStartIndex = index + 1;
+      }
+      if (i == 6)
+      {
+        disEndIndex = index - 2;
+      }
+      if (i == 7)
+      {
+        volStartIndex = index + 1;
+      }
+    }
+    distance = recData.substring(disStartIndex, disEndIndex).toDouble();
+    volume = recData.substring(volStartIndex, recData.length()).toInt();
+    String getInfo = "hit: " + String(hit) + ";" +
+                     "detect: " + String(detect) + ";" +
+                     "lightType: " + String(lightType) + ";" +
+                     "distance: " + String(distance) + ";" +
+                     "volume: " + String(volume) + ";";
+    Serial.println(getInfo);
+
+    //Warning System
+    if (warning != -1)
+    {
+      if (hit == 1 || distance < 8.7 || detect == 1 || volume > 60)
+      {
+        digitalWrite(D4, HIGH);
+        warning = 1;
+      }
+      else
+      {
+        digitalWrite(D4, LOW);
+        warning = 0;
+      }
+    }
+    else
+    {
+      digitalWrite(D4, LOW);
+    }
+    //remove hit and detct data
+    String removalStr = recData.substring(0, 4);
+    recData.replace(removalStr, "");
+    //Splicing alarm information
+    recData = recData + ";" + String(warning);
+    //replace lightType information
+    recData.setCharAt(2, String(lightType).charAt(0));
+    //Checking
+    Serial.print("Normal Uploading Data:");
+    Serial.println(recData);
+    //Uploading data to server
+    UploadData(recData);
+    Serial.println("Upload Complete!");
+    //reset String, which used to receive data from Arduino, for the next loop
+    recData = "";
+  }
+
+  //Automatically adjust the brightness according to the ambient brightness
+  if (AutoLight)
+  {
+    int EPBrightness = map(EPBrightness, 0, 9, 9, 0);
+    Serial.print("EP is: ");
+    Serial.println(EPBrightness);
+    analogWrite(D3, EPBrightness);
+    IR_brightness = map(EPBrightness, 0, 255, 0, 9);
   }
 
   //Remoter
@@ -524,10 +567,34 @@ void loop()
         IR_LightControl();
         break;
       }
+    case 16726215: //Middle "ok"
+      if (AutoLight)
+      {
+        AutoLight = false;
+        Serial.println("AutoLightOff");
+        break;
+      }
+      else
+      {
+        AutoLight = true;
+        Serial.println("AutoLightOn");
+        break;
+      }
     default:
       Serial.println("Unkonw IRReciever");
       break;
     }
     irrecv.resume(); //waiting for next value
+  }
+
+  //Used for testing to showing information in Serial Monitor
+  if (Serial.available())
+  {
+    Serial.print("Brightness of Light is: ");
+    Serial.println(IR_brightness);
+    while (Serial.available())
+    {
+      Serial.read();
+    }
   }
 }
